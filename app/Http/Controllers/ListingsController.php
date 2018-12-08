@@ -7,6 +7,12 @@ use App\Listing;
 
 class ListingsController extends Controller
 {
+    //Add Constructor - so that we can user authenticate certain methods.
+    public function __construct(){
+        // $this->middleware('auth'); //Make the entire class/functions password protected.
+        $this->middleware('auth', ['except' => ['index', 'show']]); //Make the entire class/functions except methods noted here.
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,11 @@ class ListingsController extends Controller
      */
     public function index()
     {
-        //
+        //Grab all listings - with a descending sort by create timestamp.
+        $listings = Listing::orderBy('created_at', 'desc')->get();
+
+        //Return view with listings data.
+        return view('listings')->with('listings', $listings);
     }
 
     /**
@@ -66,7 +76,11 @@ class ListingsController extends Controller
      */
     public function show($id)
     {
-        //
+        //Grab all listings - with a descending sort by create timestamp.
+        $listing = Listing::find($id);
+
+        //Return view with listing data.
+        return view('showlisting')->with('listing', $listing);
     }
 
     /**
