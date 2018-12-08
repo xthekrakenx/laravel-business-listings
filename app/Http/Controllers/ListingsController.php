@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Listing;
 
 class ListingsController extends Controller
 {
@@ -23,7 +24,7 @@ class ListingsController extends Controller
      */
     public function create()
     {
-        //
+        return view('createlisting');
     }
 
     /**
@@ -34,7 +35,27 @@ class ListingsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validate input
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'email'
+        ]);
+
+        //Create Listing
+        $listing = new Listing;
+        $listing->name = $request->input('name');
+        $listing->website = $request->input('website');
+        $listing->email = $request->input('email');
+        $listing->phone = $request->input('phone');
+        $listing->address = $request->input('address');
+        $listing->bio = $request->input('bio');
+        $listing->user_id = auth()->user()->id; //Current logged in user's id.
+
+        //Save Listing
+        $listing->save();
+
+        //Redirect to dashboard
+        return redirect('/dashboard')->with('success', 'Added Listing');
     }
 
     /**
@@ -56,7 +77,11 @@ class ListingsController extends Controller
      */
     public function edit($id)
     {
-        //
+        //Find listing by ID
+        $listing = Listing::find($id);
+
+        //Return view with listing data
+        return view('editlisting')->with('listing', $listing);
     }
 
     /**
@@ -68,7 +93,29 @@ class ListingsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Validate input
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'email'
+        ]);
+
+        //Find listing by ID
+        $listing = Listing::find($id);
+
+        //Edit Listing
+        $listing->name = $request->input('name');
+        $listing->website = $request->input('website');
+        $listing->email = $request->input('email');
+        $listing->phone = $request->input('phone');
+        $listing->address = $request->input('address');
+        $listing->bio = $request->input('bio');
+        $listing->user_id = auth()->user()->id; //Current logged in user's id.
+
+        //Save Listing
+        $listing->save();
+
+        //Redirect to dashboard
+        return redirect('/dashboard')->with('success', 'Listing Updated');
     }
 
     /**
